@@ -1,0 +1,32 @@
+[33mcommit 9610799ae25775f97f6d156e4eba89be4e2871a1[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: Denish Murawala <murawaladenish@gmail.com>
+Date:   Thu Jun 26 11:35:46 2025 +0530
+
+    Initial commit
+
+ app.js            |  39 [32m++[m[31m-[m
+ data.js           | 352 [32m+++++++++++++++++++[m
+ models/listing.js |  27 [32m++[m
+ package-lock.json | 997 [32m+++++++++++++++++++++++++++++++++++++++++++++++++++++[m[31m-[m
+ package.json      |   4 [32m+[m
+ 5 files changed, 1416 insertions(+), 3 deletions(-)
+
+[33mcommit 979f3c58624b9162d547bd5b9b0323b3e601f273[m[33m ([m[1;31morigin/master[m[33m)[m
+Author: Denish Murawala <murawaladenish@gmail.com>
+Date:   Thu Jun 26 10:34:33 2025 +0530
+
+    Set up ES6 and nodemon config
+
+ app.js            |   4 [32m+[m
+ package-lock.json | 389 [32m++++++++++++++++++++++++++++++++++++++++++++++++++++++[m
+ package.json      |  24 [32m++++[m
+ 3 files changed, 417 insertions(+)
+
+[33mcommit 616ce04b06cb76f354897feab31ac08d1b7e8e1a[m
+Author: Denish Murawala <murawaladenish@gmail.com>
+Date:   Thu Jun 26 10:18:20 2025 +0530
+
+    Initial commit with .gitignore
+
+ .gitignore | 3 [32m+++[m
+ 1 file changed, 3 insertions(+)

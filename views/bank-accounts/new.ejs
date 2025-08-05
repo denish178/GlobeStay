@@ -1,0 +1,164 @@
+<% layout('layouts/boilerplate.ejs') %>
+
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="mb-0">
+            <i class="fas fa-university"></i> Add Bank Account
+          </h4>
+        </div>
+        <div class="card-body">
+          <form
+            action="/bank-accounts"
+            method="POST"
+            novalidate
+            class="needs-validation"
+          >
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="accountHolderName" class="form-label"
+                  >Account Holder Name</label
+                >
+                <input
+                  type="text"
+                  name="bankAccount[accountHolderName]"
+                  id="accountHolderName"
+                  class="form-control"
+                  placeholder="Enter account holder name"
+                  required
+                />
+                <div class="invalid-feedback">
+                  Please enter account holder name.
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="accountNumber" class="form-label"
+                  >Account Number</label
+                >
+                <input
+                  type="text"
+                  name="bankAccount[accountNumber]"
+                  id="accountNumber"
+                  class="form-control"
+                  placeholder="Enter account number"
+                  required
+                />
+                <div class="invalid-feedback">Please enter account number.</div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="ifscCode" class="form-label">IFSC Code</label>
+                <input
+                  type="text"
+                  name="bankAccount[ifscCode]"
+                  id="ifscCode"
+                  class="form-control"
+                  placeholder="Enter IFSC code"
+                  required
+                />
+                <div class="invalid-feedback">Please enter IFSC code.</div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="bankName" class="form-label">Bank Name</label>
+                <input
+                  type="text"
+                  name="bankAccount[bankName]"
+                  id="bankName"
+                  class="form-control"
+                  placeholder="Enter bank name"
+                  required
+                />
+                <div class="invalid-feedback">Please enter bank name.</div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="branchName" class="form-label"
+                  >Branch Name (Optional)</label
+                >
+                <input
+                  type="text"
+                  name="bankAccount[branchName]"
+                  id="branchName"
+                  class="form-control"
+                  placeholder="Enter branch name"
+                />
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="accountType" class="form-label">Account Type</label>
+                <select
+                  name="bankAccount[accountType]"
+                  id="accountType"
+                  class="form-control"
+                  required
+                >
+                  <option value="">Select account type</option>
+                  <option value="savings">Savings Account</option>
+                  <option value="current">Current Account</option>
+                </select>
+                <div class="invalid-feedback">Please select account type.</div>
+              </div>
+            </div>
+
+            <div class="alert alert-info">
+              <i class="fas fa-info-circle"></i>
+              <strong>Important:</strong> This bank account will be used to
+              receive payments for your property bookings. Please ensure all
+              details are correct.
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Add Bank Account
+              </button>
+              <a href="/bank-accounts" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Bank Accounts
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Client-side validation
+  (() => {
+    "use strict";
+    const forms = document.querySelectorAll(".needs-validation");
+    Array.from(forms).forEach((form) => {
+      form.addEventListener(
+        "submit",
+        (event) => {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add("was-validated");
+        },
+        false
+      );
+    });
+  })();
+
+  // Format IFSC code
+  document.getElementById("ifscCode").addEventListener("input", function (e) {
+    e.target.value = e.target.value.toUpperCase();
+  });
+
+  // Format account number
+  document
+    .getElementById("accountNumber")
+    .addEventListener("input", function (e) {
+      e.target.value = e.target.value.replace(/[^0-9]/g, "");
+    });
+</script>
