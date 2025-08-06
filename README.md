@@ -74,5 +74,3 @@ Built as a learning project inspired by Airbnb, to practice full-stack web devel
 
 Created with ❤️ by Denish Murawala
 GitHub: [https://github.com/denish178](https://github.com/denish178)
-
-Let me know if you'd like a Hindi-English version or want to add a live demo link.
