@@ -1,0 +1,132 @@
+<% layout('layouts/boilerplate.ejs') %>
+
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <div class="d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">
+              <i class="fas fa-university"></i> Bank Account Details
+            </h3>
+            <span
+              class="badge bg-<%= bankAccount.isActive ? 'success' : 'secondary' %> fs-6"
+            >
+              <%= bankAccount.isActive ? 'Active' : 'Inactive' %>
+            </span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <h5 class="text-primary"><%= bankAccount.bankName %></h5>
+              <p class="text-muted mb-0">
+                <%= bankAccount.branchName || 'Branch not specified' %>
+              </p>
+            </div>
+            <div class="col-md-6 text-end">
+              <small class="text-muted">Account Type</small><br />
+              <strong class="fs-5"
+                ><%= bankAccount.accountType.charAt(0).toUpperCase() +
+                bankAccount.accountType.slice(1) %></strong
+              >
+            </div>
+          </div>
+
+          <hr />
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <small class="text-muted">Account Holder Name</small><br />
+              <strong class="fs-6"><%= bankAccount.accountHolderName %></strong>
+            </div>
+            <div class="col-md-6">
+              <small class="text-muted">Account Number</small><br />
+              <strong class="fs-6"
+                >****<%= bankAccount.accountNumber.slice(-4) %></strong
+              >
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <small class="text-muted">IFSC Code</small><br />
+              <strong class="fs-6"><%= bankAccount.ifscCode %></strong>
+            </div>
+            <div class="col-md-6">
+              <small class="text-muted">Added On</small><br />
+              <strong class="fs-6"
+                ><%= new Date(bankAccount.createdAt).toLocaleDateString()
+                %></strong
+              >
+            </div>
+          </div>
+
+          <hr />
+
+          <div class="d-flex justify-content-between align-items-center">
+            <a href="/bank-accounts" class="btn btn-outline-secondary">
+              <i class="fas fa-arrow-left"></i> Back to Bank Accounts
+            </a>
+
+            <div class="d-flex gap-2">
+              <a
+                href="/bank-accounts/<%= bankAccount._id %>/edit"
+                class="btn btn-warning"
+              >
+                <i class="fas fa-edit"></i> Edit Account
+              </a>
+              <button
+                type="button"
+                class="btn btn-danger"
+                onclick="deleteBankAccount('<%= bankAccount._id %>')"
+              >
+                <i class="fas fa-trash"></i> Delete Account
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function deleteBankAccount(accountId) {
+    if (
+      confirm(
+        "Are you sure you want to delete this bank account? This action cannot be undone."
+      )
+    ) {
+      console.log("Attempting to delete bank account:", accountId);
+      
+      fetch(`/bank-accounts/${accountId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => {
+          console.log("Response status:", response.status);
+          console.log("Response ok:", response.ok);
+          
+          if (response.ok) {
+            return response.json();
+          } else {
+            return response.json().then(data => {
+              throw new Error(data.error || "Delete failed");
+            });
+          }
+        })
+        .then((data) => {
+          console.log("Delete successful:", data.message);
+          alert(data.message);
+          window.location.href = "/bank-accounts";
+        })
+        .catch((error) => {
+          console.error("Network error:", error);
+          alert("An error occurred while deleting the bank account: " + error.message);
+        });
+    }
+  }
+</script>

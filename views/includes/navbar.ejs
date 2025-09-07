@@ -1,0 +1,118 @@
+<nav class="navbar navbar-expand-lg bg-white shadow-sm border-bottom sticky-top">
+  <div class="container-fluid px-3">
+    <!-- Brand -->
+    <a class="navbar-brand d-flex align-items-center" href="/listings">
+      <i class="fa-solid fa-compass text-danger me-2"></i>
+      <span class="fw-bold text-dark">GlobeStay</span>
+    </a>
+
+    <!-- Mobile Toggle Button -->
+    <button
+      class="navbar-toggler border-0"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navbar Content -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <!-- Left Navigation -->
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link fw-medium" href="/listings">
+            <i class="fas fa-home me-1"></i>Home
+          </a>
+        </li>
+        <% if (currentUser) { %>
+        <li class="nav-item">
+          <a class="nav-link fw-medium" href="/listings/new">
+            <i class="fas fa-plus me-1"></i>Add Listing
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link fw-medium" href="/bookings">
+            <i class="fas fa-calendar me-1"></i>My Bookings
+          </a>
+        </li>
+        <% } %>
+      </ul>
+
+      <!-- Right Navigation -->
+      <ul class="navbar-nav">
+        <% if (!currentUser) { %>
+        <li class="nav-item">
+          <a class="nav-link fw-medium" href="/signup">
+            <i class="fas fa-user-plus me-1"></i>Sign Up
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link fw-medium" href="/login">
+            <i class="fas fa-sign-in-alt me-1"></i>Login
+          </a>
+        </li>
+        <% } else { %>
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle d-flex align-items-center fw-medium"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <img 
+              src="<%= currentUser.profileImage %>" 
+              alt="Profile" 
+              class="rounded-circle me-2" 
+              style="width: 32px; height: 32px; object-fit: cover;"
+            />
+            <%= currentUser.username %>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+            <li>
+              <h6 class="dropdown-header">
+                <i class="fas fa-user me-2"></i>Account
+              </h6>
+            </li>
+            <li><a class="dropdown-item" href="/profile">
+              <i class="fas fa-user-edit me-2"></i>My Profile
+            </a></li>
+            <li><a class="dropdown-item" href="/bookings">
+              <i class="fas fa-calendar me-2"></i>My Bookings
+            </a></li>
+            <li><a class="dropdown-item" href="/listings/my">
+              <i class="fas fa-list me-2"></i>My Listings
+            </a></li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <h6 class="dropdown-header">
+                <i class="fas fa-wallet me-2"></i>Payments
+              </h6>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/bank-accounts">
+                <i class="fas fa-university me-2"></i>Bank Accounts
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/payouts">
+                <i class="fas fa-money-bill-wave me-2"></i>Payouts
+              </a>
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a class="dropdown-item text-danger" href="/logout">
+                <i class="fas fa-sign-out-alt me-2"></i>Logout
+              </a>
+            </li>
+          </ul>
+        </li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+</nav>

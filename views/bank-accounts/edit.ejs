@@ -1,0 +1,192 @@
+<% layout('layouts/boilerplate.ejs') %>
+
+<div class="container mt-4 mb-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="mb-0">
+            <i class="fas fa-edit"></i> Edit Bank Account
+          </h4>
+        </div>
+        <div class="card-body">
+          <form
+            action="/bank-accounts/<%= bankAccount._id %>?_method=PUT"
+            method="POST"
+            novalidate
+            class="needs-validation"
+          >
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="accountHolderName" class="form-label"
+                  >Account Holder Name</label
+                >
+                <input
+                  type="text"
+                  name="bankAccount[accountHolderName]"
+                  id="accountHolderName"
+                  class="form-control"
+                  placeholder="Enter account holder name"
+                  value="<%= bankAccount.accountHolderName %>"
+                  required
+                />
+                <div class="invalid-feedback">
+                  Please enter account holder name.
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="accountNumber" class="form-label"
+                  >Account Number</label
+                >
+                <input
+                  type="text"
+                  name="bankAccount[accountNumber]"
+                  id="accountNumber"
+                  class="form-control"
+                  placeholder="Enter account number"
+                  value="<%= bankAccount.accountNumber %>"
+                  required
+                />
+                <div class="invalid-feedback">Please enter account number.</div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="ifscCode" class="form-label">IFSC Code</label>
+                <input
+                  type="text"
+                  name="bankAccount[ifscCode]"
+                  id="ifscCode"
+                  class="form-control"
+                  placeholder="Enter IFSC code"
+                  value="<%= bankAccount.ifscCode %>"
+                  required
+                />
+                <div class="invalid-feedback">Please enter IFSC code.</div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="bankName" class="form-label">Bank Name</label>
+                <select
+                  name="bankAccount[bankName]"
+                  id="bankName"
+                  class="form-control"
+                  required
+                >
+                  <option value="">Select bank name</option>
+                  <option value="State Bank of India (SBI)" <%= bankAccount.bankName === 'State Bank of India (SBI)' ? 'selected' : '' %>>State Bank of India (SBI)</option>
+                  <option value="HDFC Bank" <%= bankAccount.bankName === 'HDFC Bank' ? 'selected' : '' %>>HDFC Bank</option>
+                  <option value="ICICI Bank" <%= bankAccount.bankName === 'ICICI Bank' ? 'selected' : '' %>>ICICI Bank</option>
+                  <option value="Axis Bank" <%= bankAccount.bankName === 'Axis Bank' ? 'selected' : '' %>>Axis Bank</option>
+                  <option value="Kotak Mahindra Bank" <%= bankAccount.bankName === 'Kotak Mahindra Bank' ? 'selected' : '' %>>Kotak Mahindra Bank</option>
+                  <option value="Punjab National Bank (PNB)" <%= bankAccount.bankName === 'Punjab National Bank (PNB)' ? 'selected' : '' %>>Punjab National Bank (PNB)</option>
+                  <option value="Bank of Baroda" <%= bankAccount.bankName === 'Bank of Baroda' ? 'selected' : '' %>>Bank of Baroda</option>
+                  <option value="Canara Bank" <%= bankAccount.bankName === 'Canara Bank' ? 'selected' : '' %>>Canara Bank</option>
+                  <option value="Union Bank of India" <%= bankAccount.bankName === 'Union Bank of India' ? 'selected' : '' %>>Union Bank of India</option>
+                  <option value="IndusInd Bank" <%= bankAccount.bankName === 'IndusInd Bank' ? 'selected' : '' %>>IndusInd Bank</option>
+                  <option value="Yes Bank" <%= bankAccount.bankName === 'Yes Bank' ? 'selected' : '' %>>Yes Bank</option>
+                  <option value="Federal Bank" <%= bankAccount.bankName === 'Federal Bank' ? 'selected' : '' %>>Federal Bank</option>
+                  <option value="IDBI Bank" <%= bankAccount.bankName === 'IDBI Bank' ? 'selected' : '' %>>IDBI Bank</option>
+                  <option value="Bank of India" <%= bankAccount.bankName === 'Bank of India' ? 'selected' : '' %>>Bank of India</option>
+                  <option value="Central Bank of India" <%= bankAccount.bankName === 'Central Bank of India' ? 'selected' : '' %>>Central Bank of India</option>
+                  <option value="Indian Bank" <%= bankAccount.bankName === 'Indian Bank' ? 'selected' : '' %>>Indian Bank</option>
+                  <option value="Indian Overseas Bank" <%= bankAccount.bankName === 'Indian Overseas Bank' ? 'selected' : '' %>>Indian Overseas Bank</option>
+                  <option value="UCO Bank" <%= bankAccount.bankName === 'UCO Bank' ? 'selected' : '' %>>UCO Bank</option>
+                  <option value="Punjab & Sind Bank" <%= bankAccount.bankName === 'Punjab & Sind Bank' ? 'selected' : '' %>>Punjab & Sind Bank</option>
+                  <option value="Bank of Maharashtra" <%= bankAccount.bankName === 'Bank of Maharashtra' ? 'selected' : '' %>>Bank of Maharashtra</option>
+                </select>
+                <div class="invalid-feedback">Please select bank name.</div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="branchName" class="form-label"
+                  >Branch Name (Optional)</label
+                >
+                <input
+                  type="text"
+                  name="bankAccount[branchName]"
+                  id="branchName"
+                  class="form-control"
+                  placeholder="Enter branch name"
+                  value="<%= bankAccount.branchName || '' %>"
+                />
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="accountType" class="form-label">Account Type</label>
+                <select
+                  name="bankAccount[accountType]"
+                  id="accountType"
+                  class="form-control"
+                  required
+                >
+                  <option value="">Select account type</option>
+                  <option value="savings" <%= bankAccount.accountType === 'savings' ? 'selected' : '' %>>Savings Account</option>
+                  <option value="current" <%= bankAccount.accountType === 'current' ? 'selected' : '' %>>Current Account</option>
+                </select>
+                <div class="invalid-feedback">Please select account type.</div>
+              </div>
+            </div>
+
+            <div class="alert alert-info">
+              <i class="fas fa-info-circle"></i>
+              <strong>Important:</strong> This bank account will be used to
+              receive payments for your property bookings. Please ensure all
+              details are correct.
+            </div>
+
+            <div class="row g-2">
+              <div class="col-md-6">
+                <button type="submit" class="btn btn-primary w-100">
+                  <i class="fas fa-save"></i> Update Bank Account
+                </button>
+              </div>
+              <div class="col-md-6">
+                <a href="/bank-accounts" class="btn btn-outline-secondary w-100">
+                  <i class="fas fa-arrow-left"></i> Back to Bank Accounts
+                </a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Client-side validation
+  (() => {
+    "use strict";
+    const forms = document.querySelectorAll(".needs-validation");
+    Array.from(forms).forEach((form) => {
+      form.addEventListener(
+        "submit",
+        (event) => {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add("was-validated");
+        },
+        false
+      );
+    });
+  })();
+
+  // Format IFSC code
+  document.getElementById("ifscCode").addEventListener("input", function (e) {
+    e.target.value = e.target.value.toUpperCase();
+  });
+
+  // Format account number
+  document
+    .getElementById("accountNumber")
+    .addEventListener("input", function (e) {
+      e.target.value = e.target.value.replace(/[^0-9]/g, "");
+    });
+</script>

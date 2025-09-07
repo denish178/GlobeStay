@@ -1,0 +1,172 @@
+<% layout('layouts/boilerplate.ejs') %>
+
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <h3>My Payouts</h3>
+    </div>
+    <div class="col-md-4 text-end">
+      <button class="btn btn-outline-primary" onclick="loadPayoutStats()">
+        <i class="fas fa-chart-bar"></i> View Statistics
+      </button>
+    </div>
+  </div>
+
+  <% if(payouts.length === 0) { %>
+  <div class="text-center py-5">
+    <i class="fas fa-money-bill-wave fa-3x text-muted mb-3"></i>
+    <h5 class="text-muted">No payouts found</h5>
+    <p class="text-muted">
+      Payouts will appear here once you receive payments for your property
+      bookings.
+    </p>
+  </div>
+  <% } else { %>
+  <div class="row">
+    <% for(let payout of payouts) { %>
+    <div class="col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-header">
+          <div class="d-flex justify-content-between align-items-center">
+            <h6 class="mb-0">
+              <i class="fas fa-money-bill-wave"></i> Payout #<%=
+              payout.transactionId %>
+            </h6>
+            <span
+              class="badge bg-<%= payout.status === 'completed' ? 'success' : payout.status === 'pending' ? 'warning' : payout.status === 'failed' ? 'danger' : 'secondary' %>"
+            >
+              <%= payout.status.charAt(0).toUpperCase() + payout.status.slice(1)
+              %>
+            </span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-6">
+              <small class="text-muted">Amount</small><br />
+              <strong>₹<%= payout.amount.toLocaleString() %></strong>
+            </div>
+            <div class="col-6">
+              <small class="text-muted">Net Amount</small><br />
+              <strong>₹<%= payout.netAmount.toLocaleString() %></strong>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-6">
+              <small class="text-muted">Platform Fee</small><br />
+              <strong>₹<%= payout.platformFee.toLocaleString() %></strong>
+            </div>
+            <div class="col-6">
+              <small class="text-muted">Payment Method</small><br />
+              <strong><%= payout.payoutMethod.replace('_', ' ').charAt(0).toUpperCase() + payout.payoutMethod.replace('_', ' ').slice(1) %></strong>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <small class="text-muted">Property</small><br />
+            <strong><%= payout.booking.listing.title %></strong>
+          </div>
+
+          <div class="mb-3">
+            <small class="text-muted">Guest</small><br />
+            <strong><%= payout.payment.metadata.guestName %></strong>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted">
+              Created: <%= new Date(payout.createdAt).toLocaleDateString() %>
+            </small>
+
+            <a
+              href="/payouts/<%= payout._id %>"
+              class="btn btn-outline-primary btn-sm"
+            >
+              <i class="fas fa-eye"></i> View Details
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% } %>
+  </div>
+  <% } %>
+</div>
+
+<!-- Statistics Modal -->
+<div class="modal fade" id="statsModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Payout Statistics</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <div class="modal-body" id="statsContent">
+        <div class="text-center">
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function loadPayoutStats() {
+    const modal = new bootstrap.Modal(document.getElementById("statsModal"));
+    modal.show();
+
+    fetch("/payouts/stats")
+      .then((response) => response.json())
+      .then((data) => {
+        const statsContent = document.getElementById("statsContent");
+
+        let statsHtml = `
+        <div class="row text-center">
+          <div class="col-6">
+            <h4>${data.totalPayouts}</h4>
+            <small class="text-muted">Total Payouts</small>
+          </div>
+          <div class="col-6">
+            <h4>₹${data.totalAmount.toLocaleString()}</h4>
+            <small class="text-muted">Total Earned</small>
+          </div>
+        </div>
+        <hr>
+        <h6>Status Breakdown:</h6>
+        <ul class="list-group list-group-flush">
+      `;
+
+        data.stats.forEach((stat) => {
+          const status = stat._id.charAt(0).toUpperCase() + stat._id.slice(1);
+          const color =
+            stat._id === "completed"
+              ? "success"
+              : stat._id === "pending"
+              ? "warning"
+              : "secondary";
+
+          statsHtml += `
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span class="badge bg-${color}">${status}</span>
+            <span>${
+              stat.count
+            } payouts - ₹${stat.totalAmount.toLocaleString()}</span>
+          </li>
+        `;
+        });
+
+        statsHtml += "</ul>";
+        statsContent.innerHTML = statsHtml;
+      })
+      .catch((error) => {
+        document.getElementById("statsContent").innerHTML =
+          '<div class="alert alert-danger">Error loading statistics</div>';
+      });
+  }
+</script>

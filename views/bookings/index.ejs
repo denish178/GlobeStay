@@ -1,0 +1,149 @@
+<% layout('layouts/boilerplate.ejs') %>
+
+<div class="container">
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <h3>My Bookings</h3>
+    </div>
+  </div>
+
+  <% if(bookings.length === 0) { %>
+  <div class="text-center py-5">
+    <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+    <h5 class="text-muted">No bookings found</h5>
+    <p class="text-muted">
+      Start exploring listings to make your first booking!
+    </p>
+    <a href="/listings" class="btn btn-primary">
+      <i class="fas fa-search"></i> Browse Listings
+    </a>
+  </div>
+  <% } else { %>
+  <div class="row">
+    <% for(let booking of bookings) { %>
+    <div class="col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="row g-0">
+          <div class="col-md-4">
+            <img
+              src="<%= booking.listing.image %>"
+              class="img-fluid rounded-start h-100"
+              style="object-fit: cover"
+              alt="<%= booking.listing.title %>"
+            />
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h6 class="card-title"><%= booking.listing.title %></h6>
+              <p class="card-text text-muted small">
+                <i class="fas fa-map-marker-alt"></i> <%=
+                booking.listing.location %>, <%= booking.listing.country %>
+              </p>
+
+              <div class="row mb-2">
+                <div class="col-6">
+                  <small class="text-muted">Check-in</small><br />
+                  <strong
+                    ><%= new Date(booking.checkIn).toLocaleDateString()
+                    %></strong
+                  >
+                </div>
+                <div class="col-6">
+                  <small class="text-muted">Check-out</small><br />
+                  <strong
+                    ><%= new Date(booking.checkOut).toLocaleDateString()
+                    %></strong
+                  >
+                </div>
+              </div>
+
+              <div class="row mb-2">
+                <div class="col-6">
+                  <small class="text-muted">Guests</small><br />
+                  <strong><%= booking.guests %></strong>
+                </div>
+                <div class="col-6">
+                  <small class="text-muted">Total</small><br />
+                  <strong class="text-primary"
+                    >₹<%= booking.totalPrice.toLocaleString("en-IN") %></strong
+                  >
+                </div>
+              </div>
+
+              <!-- Payment Status Display -->
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <div>
+                  <% if(booking.paymentStatus === 'pending') { %>
+                  <small class="text-muted">Payment Status</small><br />
+                  <span class="badge bg-warning">
+                    Payment Pending
+                  </span>
+                  <% } else if(booking.paymentStatus === 'paid') { %>
+                  <small class="text-muted">Payment Status</small><br />
+                  <span class="badge bg-success">
+                    Paid
+                  </span>
+                  <% } %>
+                </div>
+                <div>
+                  <% if(booking.paymentStatus === 'pending') { %>
+                  <a
+                    href="/bookings/<%= booking._id %>/payment"
+                    class="btn btn-success btn-sm"
+                  >
+                    <i class="fas fa-credit-card"></i> Pay Now
+                  </a>
+                  <% } %>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="row g-2">
+                <div class="col-6">
+                  <a
+                    href="/bookings/<%= booking._id %>"
+                    class="btn btn-outline-primary btn-sm w-100"
+                  >
+                    <i class="fas fa-eye me-1"></i> View Details
+                  </a>
+                </div>
+                <div class="col-6">
+                  <% if(booking.status === 'pending' || booking.status === 'confirmed') { %>
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger btn-sm w-100"
+                    onclick="cancelBooking('<%= booking._id %>')"
+                  >
+                    <i class="fas fa-times me-1"></i> Cancel
+                  </button>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% } %>
+  </div>
+  <% } %>
+</div>
+
+<script>
+  function cancelBooking(bookingId) {
+    if (confirm("Are you sure you want to cancel this booking?")) {
+      fetch(`/bookings/${bookingId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }).then((response) => {
+        if (response.ok) {
+          window.location.reload();
+        } else {
+          alert("Error cancelling booking");
+        }
+      });
+    }
+  }
+</script>

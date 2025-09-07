@@ -1,0 +1,310 @@
+<% layout('layouts/boilerplate.ejs') %>
+
+<!-- Hero Section -->
+<div class="container-fluid px-0">
+  <div class="row g-0">
+    <div class="col-12">
+      <div class="position-relative">
+        <img
+          src="<%= listing.image %>"
+          class="img-fluid"
+          alt="<%= listing.title %>"
+          style="height: 60vh; object-fit: cover; max-width: 100%; width: auto;"
+        />
+        <div class="position-absolute top-0 start-0 m-4">
+          <span class="badge bg-danger px-3 py-2 rounded-pill fs-6">
+            <%= listing.category %>
+          </span>
+        </div>
+        <div class="position-absolute top-0 end-0 m-4">
+          <% if (currentUser && listing.owner._id.toString() !== currentUser._id.toString()) { %>
+          <a href="/bookings/new/<%= listing._id %>" class="btn btn-danger btn-lg shadow">
+            <i class="fas fa-calendar-check me-2"></i> Book Now
+          </a>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="container my-5">
+  <div class="row">
+    <!-- Left Column - Main Info -->
+    <div class="col-12 col-lg-8">
+      <!-- Title and Owner -->
+      <div class="mb-4">
+        <h1 class="fw-bold text-dark mb-2"><%= listing.title %></h1>
+        <div class="d-flex align-items-center mb-3">
+          <img 
+            src="<%= listing.owner.profileImage %>" 
+            alt="Owner" 
+            class="rounded-circle me-3" 
+            style="width: 50px; height: 50px; object-fit: cover;"
+          />
+          <div>
+            <p class="mb-0 fw-medium">Hosted by <%= listing.owner.username %></p>
+            <small class="text-muted">Verified Host</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Property Details Card -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+          <h4 class="card-title fw-bold mb-4">
+            <i class="fas fa-home me-2 text-primary"></i>Property Details
+          </h4>
+          
+          <div class="row g-4 mb-4">
+            <div class="col-6 col-md-3 text-center">
+              <div class="p-3 bg-light rounded-3">
+                <i class="fas fa-bed fa-2x text-primary mb-2"></i>
+                <h5 class="fw-bold mb-1"><%= listing.bedrooms %></h5>
+                <small class="text-muted">Bedroom<%= listing.bedrooms !== 1 ? 's' : '' %></small>
+              </div>
+            </div>
+            <div class="col-6 col-md-3 text-center">
+              <div class="p-3 bg-light rounded-3">
+                <i class="fas fa-bath fa-2x text-primary mb-2"></i>
+                <h5 class="fw-bold mb-1"><%= listing.bathrooms %></h5>
+                <small class="text-muted">Bathroom<%= listing.bathrooms !== 1 ? 's' : '' %></small>
+              </div>
+            </div>
+            <div class="col-6 col-md-3 text-center">
+              <div class="p-3 bg-light rounded-3">
+                <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                <h5 class="fw-bold mb-1"><%= listing.capacity %></h5>
+                <small class="text-muted">Guests</small>
+              </div>
+            </div>
+            <div class="col-6 col-md-3 text-center">
+              <div class="p-3 bg-light rounded-3">
+                <i class="fas fa-map-marker-alt fa-2x text-primary mb-2"></i>
+                <h5 class="fw-bold mb-1"><%= listing.location %></h5>
+                <small class="text-muted"><%= listing.country %></small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="mb-4">
+            <h5 class="fw-bold mb-3">About this place</h5>
+            <p class="text-muted lh-lg"><%= listing.description %></p>
+          </div>
+
+          <!-- Amenities -->
+          <% if (listing.amenities && listing.amenities.length > 0) { %>
+          <div class="mb-4">
+            <h5 class="fw-bold mb-3">Amenities</h5>
+            <div class="row g-2">
+              <% listing.amenities.forEach(amenity => { %>
+              <div class="col-6 col-md-4">
+                <div class="d-flex align-items-center p-2 bg-light rounded">
+                  <i class="fas fa-check text-success me-2"></i>
+                  <span class="small"><%= amenity %></span>
+                </div>
+              </div>
+              <% }); %>
+            </div>
+          </div>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- Reviews Section -->
+      <% if(listing.averageRating > 0) { %>
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+          <h4 class="card-title fw-bold mb-3">
+            <i class="fas fa-star me-2 text-warning"></i>Reviews
+          </h4>
+          <div class="d-flex align-items-center mb-3">
+            <div class="text-warning me-3">
+              <i class="fas fa-star fa-2x"></i>
+            </div>
+            <div>
+              <h3 class="fw-bold mb-0"><%= listing.averageRating.toFixed(1) %></h3>
+              <p class="text-muted mb-0">Based on <%= listing.totalReviews %> review<%= listing.totalReviews !== 1 ? 's' : '' %></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% } %>
+
+      <!-- Owner Alert -->
+      <% if (currentUser && listing.owner.equals(currentUser._id)) { %>
+      <div class="alert alert-info border-0 shadow-sm">
+        <div class="d-flex align-items-start">
+          <i class="fas fa-info-circle fa-2x me-3 text-info"></i>
+          <div>
+            <h5 class="alert-heading fw-bold">Property Owner Dashboard</h5>
+            <p class="mb-2">This is your property listing.</p>
+            <% if (!hasBankAccount) { %>
+            <div class="alert alert-warning border-0 mt-3">
+              <i class="fas fa-exclamation-triangle me-2"></i>
+              <strong>Action Required:</strong> You need to add a bank account to receive payments!
+              <br>
+              <a href="/bank-accounts/new" class="btn btn-warning btn-sm mt-2">
+                <i class="fas fa-university me-2"></i> Add Bank Account
+              </a>
+            </div>
+            <% } else { %>
+            <p class="text-success mb-0">
+              <i class="fas fa-check-circle me-2"></i>
+              Bank account configured - you'll receive payouts automatically.
+            </p>
+            <% } %>
+          </div>
+        </div>
+      </div>
+      <% } %>
+    </div>
+
+    <!-- Right Column - Pricing & Booking -->
+    <div class="col-12 col-lg-4">
+      <div class="sticky-top" style="top: 100px;">
+        <!-- Pricing Card -->
+        <div class="card shadow-lg border-0 mb-4">
+          <div class="card-body p-4">
+            <div class="text-center mb-4">
+              <h2 class="fw-bold text-danger mb-0">
+                ₹<%= listing.price.toLocaleString("en-IN") %>
+              </h2>
+              <p class="text-muted mb-0">per night</p>
+            </div>
+            
+            <% if (currentUser && listing.owner._id.toString() !== currentUser._id.toString()) { %>
+            <a href="/bookings/new/<%= listing._id %>" class="btn btn-danger btn-lg w-100 mb-3">
+              <i class="fas fa-calendar-check me-2"></i> Book Now
+            </a>
+            <% } else if (currentUser && listing.owner._id.toString() === currentUser._id.toString()) { %>
+            <div class="alert alert-info text-center">
+              <i class="fas fa-info-circle me-2"></i>
+              <span>This is your listing</span>
+            </div>
+            <% } else { %>
+            <div class="alert alert-info text-center">
+              <i class="fas fa-sign-in-alt me-2"></i>
+              <a href="/login" class="text-decoration-none">Login to book this property</a>
+            </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <% if (currentUser && listing.owner._id.toString() === currentUser._id.toString()) { %>
+  <div class="row justify-content-center mt-4 mb-5 text-center">
+    <div class="col-md-2 col-10 mb-2 mb-md-0">
+      <a href="/listings/<%= listing._id %>/edit">
+        <button class="btn edit-btn w-100">Edit</button>
+      </a>
+    </div>
+    <div class="col-md-2 col-10">
+      <form
+        action="/listings/<%= listing._id %>/delete?_method=DELETE"
+        method="post"
+      >
+        <button class="btn btn-dark w-100">Delete</button>
+      </form>
+    </div>
+  </div>
+  <% } %>
+
+ <% if (currentUser) { %>
+  <div class="col-12 col-md-8 col-lg-6 mx-auto review-section mb-3">
+    <h4>Leave a Review</h4>
+    <form
+      action="/listings/<%= listing._id %>/reviews"
+      method="post"
+      novalidate
+      class="review-form needs-validation"
+    >
+      <!-- Only fieldset rating retained -->
+      <fieldset class="starability-slot mb-3">
+        <legend>Rating:</legend>
+        <input
+          type="radio"
+          id="no-rate"
+          class="input-no-rate"
+          name="review[rating]"
+          value="0"
+          checked
+          aria-label="No rating."
+        />
+        <input
+          type="radio"
+          id="first-rate1"
+          name="review[rating]"
+          value="1"
+          required
+        />
+        <label for="first-rate1" title="Terrible">1 star</label>
+        <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+        <label for="first-rate2" title="Not good">2 stars</label>
+        <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+        <label for="first-rate3" title="Average">3 stars</label>
+        <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+        <label for="first-rate4" title="Very good">4 stars</label>
+        <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+        <label for="first-rate5" title="Amazing">5 stars</label>
+      </fieldset>
+
+      <div>
+        <label for="comment" class="form-label">Comments</label>
+        <textarea
+          name="review[comment]"
+          id="comment"
+          cols="30"
+          rows="5"
+          class="form-control"
+          required
+        ></textarea>
+        <div class="invalid-feedback">Please add some comment for review</div>
+      </div>
+      <button type="submit" class="btn btn-primary mt-3">Submit</button>
+    </form>
+  </div>
+
+  <h4 class="mt-4">All Reviews</h4>
+
+  <% if (listing.reviews.length > 0) { %>
+  <div class="row">
+    <% for (let review of listing.reviews) { %>
+    <div class="col-12 col-md-6 col-lg-4 mb-4">
+      <div
+        class="d-flex flex-column justify-content-between p-3 border rounded shadow-sm bg-light h-100 review-card"
+      >
+        <div>
+          <h5>@<%= review.author.username %></h5>
+          <hr />
+          <p class="mb-2">
+            <strong>Rating:</strong>
+          </p>
+          <p class="starability-result" data-rating="<%= review.rating %>">
+            Rated: <%= review.rating %> star<%= review.rating > 1 ? 's' : '' %>
+          </p>
+
+          <p class="mb-0"><%= review.comment %></p>
+        </div>
+        <% if (currentUser && review.author._id.toString() === currentUser._id.toString()) { %>
+        <form
+          action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE"
+          method="post"
+          class="mt-3"
+        >
+          <button class="btn btn-sm btn-dark w-40">Delete</button>
+        </form>
+        <% } %>
+      </div>
+    </div>
+    <% } %>
+  </div>
+  <% } else { %>
+  <p>No reviews yet. Be the first to leave one!</p>
+  <% } %> <% } %>
+</div>

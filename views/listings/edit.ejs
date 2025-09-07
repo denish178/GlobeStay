@@ -1,0 +1,119 @@
+<% layout('layouts/boilerplate.ejs') %>
+
+<div class="row mt-3">
+  <div class="col-8 offset-2">
+    <h3>EDIT YOUR LISTING</h3>
+
+    <% if (!listingData) { %>
+    <div class="alert alert-danger">Listing not found</div>
+    <% } else { %>
+    <form
+      action="/listings/<%= listingData._id %>?_method=PUT"
+      method="post"
+      class="needs-validation"
+      novalidate
+      enctype="multipart/form-data"
+    >
+      <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <input
+          type="text"
+          name="listing[title]"
+          value="<%= listingData.title %>"
+          class="form-control"
+          required
+        />
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">Enter a Title for your place</div>
+      </div>
+
+      <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea
+          name="listing[description]"
+          class="form-control"
+          rows="4"
+          required
+        >
+<%= listingData.description %></textarea
+        >
+        <div class="invalid-feedback">
+          Give a short description about your place
+        </div>
+        <div class="valid-feedback">Looks good!</div>
+      </div>
+
+      <div class="mb-3">
+        <label for="image" class="form-label">Upload New Image (Optional)</label>
+        <input
+          type="file"
+          name="listing[image]"
+          id="image"
+          class="form-control"
+          accept="image/*"
+        />
+        <div class="form-text">Leave empty to keep current image</div>
+        <div class="valid-feedback">Looks good!</div>
+      </div>
+      
+      <!-- Current Image Display -->
+      <div class="mb-3">
+        <label class="form-label">Current Image</label>
+        <div class="text-center">
+          <img 
+            src="<%= listingData.image %>" 
+            alt="Current listing image" 
+            class="img-fluid rounded shadow-sm" 
+            style="max-height: 200px; max-width: 300px;"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="mb-3 col-md-4">
+          <label for="price" class="form-label">Price</label>
+          <input
+            type="number"
+            name="listing[price]"
+            value="<%= listingData.price %>"
+            class="form-control"
+            required
+          />
+          <div class="invalid-feedback">Enter a valid price</div>
+          <div class="valid-feedback">Looks good!</div>
+        </div>
+
+        <div class="mb-3 col-md-8">
+          <label for="country" class="form-label">Country</label>
+          <input
+            type="text"
+            name="listing[country]"
+            value="<%= listingData.country %>"
+            class="form-control"
+            required
+          />
+          <div class="invalid-feedback">Enter a valid country</div>
+          <div class="valid-feedback">Looks good!</div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="location" class="form-label">Location</label>
+        <input
+          type="text"
+          name="listing[location]"
+          value="<%= listingData.location %>"
+          class="form-control"
+          required
+        />
+        <div class="invalid-feedback">Enter a valid location</div>
+        <div class="valid-feedback">Looks good!</div>
+      </div>
+
+      <button class="btn btn-dark edit-btn mb-3">Submit</button>
+    </form>
+    <% } %>
+
+    <script src="/js/script.js"></script>
+  </div>
+</div>

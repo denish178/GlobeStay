@@ -1,0 +1,188 @@
+<% layout('layouts/boilerplate.ejs') %>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h4>Book Your Stay</h4>
+        </div>
+        <div class="card-body">
+          <!-- Listing Info -->
+          <div class="row mb-4">
+            <div class="col-md-4">
+              <img
+                src="<%= listing.image %>"
+                class="img-fluid rounded"
+                alt="<%= listing.title %>"
+              />
+            </div>
+            <div class="col-md-8">
+              <h5><%= listing.title %></h5>
+              <p class="text-muted">
+                <i class="fas fa-map-marker-alt"></i> <%= listing.location %>,
+                <%= listing.country %>
+              </p>
+              <p class="text-muted">
+                <i class="fas fa-bed"></i> <%= listing.bedrooms %> bedroom(s) •
+                <i class="fas fa-bath"></i> <%= listing.bathrooms %> bathroom(s)
+                • <i class="fas fa-users"></i> Up to <%= listing.capacity %>
+                guests
+              </p>
+              <h6 class="text-primary">
+                ₹<%= listing.price.toLocaleString("en-IN") %> /night
+              </h6>
+            </div>
+          </div>
+
+          <!-- Booking Form -->
+          <form action="/bookings/<%= listing._id %>" method="POST">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="checkIn" class="form-label">Check-in Date</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="checkIn"
+                  name="booking[checkIn]"
+                  required
+                  min="<%= new Date().toISOString().split('T')[0] %>"
+                />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="checkOut" class="form-label">Check-out Date</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="checkOut"
+                  name="booking[checkOut]"
+                  required
+                  min="<%= new Date().toISOString().split('T')[0] %>"
+                />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="guests" class="form-label">Number of Guests</label>
+                <select
+                  class="form-control"
+                  id="guests"
+                  name="booking[guests]"
+                  required
+                >
+                  <% for(let i = 1; i <= listing.capacity; i++) { %>
+                  <option value="<%= i %>">
+                    <%= i %> guest<%= i !== 1 ? 's' : '' %>
+                  </option>
+                  <% } %>
+                </select>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="nights" class="form-label">Total Nights</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="nights"
+                  readonly
+                  data-price="<%= listing.price %>"
+                />
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="specialRequests" class="form-label"
+                >Special Requests (Optional)</label
+              >
+              <textarea
+                class="form-control"
+                id="specialRequests"
+                name="booking[specialRequests]"
+                rows="3"
+                placeholder="Any special requests or requirements..."
+              ></textarea>
+            </div>
+
+            <div class="card bg-light mb-3">
+              <div class="card-body">
+                <h6>Booking Summary</h6>
+                <div class="row">
+                  <div class="col-md-6">
+                    <p class="mb-1">
+                      Price per night: ₹<%=
+                      listing.price.toLocaleString("en-IN") %>
+                    </p>
+                    <p class="mb-1">
+                      Nights: <span id="nightsDisplay">0</span>
+                    </p>
+                    <p class="mb-0">
+                      <strong>Total: ₹<span id="totalPrice">0</span></strong>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-calendar-check"></i> Confirm Booking
+              </button>
+              <a
+                href="/listings/<%= listing._id %>"
+                class="btn btn-outline-secondary"
+              >
+                <i class="fas fa-arrow-left"></i> Back to Listing
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const checkIn = document.getElementById("checkIn");
+    const checkOut = document.getElementById("checkOut");
+    const nights = document.getElementById("nights");
+    const nightsDisplay = document.getElementById("nightsDisplay");
+    const totalPrice = document.getElementById("totalPrice");
+    const pricePerNight = parseInt(
+      document.getElementById("nights").getAttribute("data-price")
+    );
+
+    function calculateNights() {
+      if (checkIn.value && checkOut.value) {
+        const start = new Date(checkIn.value);
+        const end = new Date(checkOut.value);
+        const diffTime = Math.abs(end - start);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays > 0) {
+          nights.value = diffDays;
+          nightsDisplay.textContent = diffDays;
+          totalPrice.textContent = (diffDays * pricePerNight).toLocaleString(
+            "en-IN"
+          );
+        } else {
+          nights.value = 0;
+          nightsDisplay.textContent = 0;
+          totalPrice.textContent = 0;
+        }
+      }
+    }
+
+    checkIn.addEventListener("change", calculateNights);
+    checkOut.addEventListener("change", calculateNights);
+
+    // Set minimum check-out date based on check-in
+    checkIn.addEventListener("change", function () {
+      if (this.value) {
+        const nextDay = new Date(this.value);
+        nextDay.setDate(nextDay.getDate() + 1);
+        checkOut.min = nextDay.toISOString().split("T")[0];
+      }
+    });
+  });
+</script>

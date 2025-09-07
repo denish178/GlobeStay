@@ -1,0 +1,132 @@
+<% layout('layouts/boilerplate.ejs') %>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="mb-0">
+            <i class="fas fa-file-contract me-2"></i>Terms of Service
+          </h2>
+          <p class="text-muted mb-0">Last updated: <%= new Date().toLocaleDateString() %></p>
+        </div>
+        <div class="card-body">
+          <div class="terms-content">
+            <h4>1. Acceptance of Terms</h4>
+            <p>By accessing and using GlobeStay, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.</p>
+
+            <h4>2. Description of Service</h4>
+            <p>GlobeStay is an online platform that connects travelers with property owners who wish to rent out their properties. We provide a marketplace for booking accommodations worldwide.</p>
+
+            <h4>3. User Accounts</h4>
+            <p>To use our service, you must:</p>
+            <ul>
+              <li>Provide accurate and complete information when creating an account</li>
+              <li>Maintain the security of your password and account</li>
+              <li>Accept responsibility for all activities under your account</li>
+              <li>Notify us immediately of any unauthorized use of your account</li>
+            </ul>
+
+            <h4>4. Booking and Payment</h4>
+            <p>When you make a booking:</p>
+            <ul>
+              <li>You agree to pay all applicable fees and taxes</li>
+              <li>Payment is processed securely through our payment partners</li>
+              <li>Refunds are subject to our cancellation policy</li>
+              <li>You are responsible for any additional charges incurred during your stay</li>
+            </ul>
+
+            <h4>5. Property Listings</h4>
+            <p>Property owners are responsible for:</p>
+            <ul>
+              <li>Providing accurate and up-to-date property information</li>
+              <li>Maintaining the property in good condition</li>
+              <li>Honoring confirmed bookings</li>
+              <li>Complying with all local laws and regulations</li>
+            </ul>
+
+            <h4>6. Prohibited Activities</h4>
+            <p>You agree not to:</p>
+            <ul>
+              <li>Use the service for any unlawful purpose</li>
+              <li>Post false, misleading, or fraudulent information</li>
+              <li>Interfere with the proper functioning of the platform</li>
+              <li>Attempt to gain unauthorized access to any part of the service</li>
+              <li>Use automated systems to access the service without permission</li>
+            </ul>
+
+            <h4>7. Cancellation Policy</h4>
+            <p>Cancellation terms vary by property and are clearly displayed at the time of booking. Generally:</p>
+            <ul>
+              <li>Free cancellation within 24 hours of booking</li>
+              <li>Partial refunds may apply based on timing of cancellation</li>
+              <li>No refunds for no-shows or same-day cancellations</li>
+            </ul>
+
+            <h4>8. Limitation of Liability</h4>
+            <p>GlobeStay shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses resulting from your use of the service.</p>
+
+            <h4>9. Dispute Resolution</h4>
+            <p>Any disputes arising from these terms or your use of our service will be resolved through binding arbitration in accordance with the rules of the American Arbitration Association.</p>
+
+            <h4>10. Intellectual Property</h4>
+            <p>The service and its original content, features, and functionality are owned by GlobeStay and are protected by international copyright, trademark, patent, trade secret, and other intellectual property laws.</p>
+
+            <h4>11. Privacy</h4>
+            <p>Your privacy is important to us. Please review our Privacy Policy, which also governs your use of the service, to understand our practices.</p>
+
+            <h4>12. Termination</h4>
+            <p>We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.</p>
+
+            <h4>13. Changes to Terms</h4>
+            <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will try to provide at least 30 days notice prior to any new terms taking effect.</p>
+
+            <h4>14. Contact Information</h4>
+            <p>If you have any questions about these Terms of Service, please contact us at:</p>
+            <ul>
+              <li>Email: <a href="mailto:murawaladenish@gmail.com">murawaladenish@gmail.com</a></li>
+              <li>Phone: <a href="tel:+918401275343">+91 8401275343</a> (India)</li>
+              <li>Address: GlobeStay Private Limited, 123 Travel Street, City, State 12345</li>
+            </ul>
+
+            <div class="alert alert-info mt-4">
+              <i class="fas fa-info-circle me-2"></i>
+              <strong>Note:</strong> These terms are effective as of the date of last update and will remain in effect except with respect to any changes in their provisions in the future, which will be in effect immediately after being posted on this page.
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <a href="/listings" class="btn btn-primary">
+            <i class="fas fa-home me-2"></i>Back to Home
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.terms-content h4 {
+  color: #2c3e50;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 0.5rem;
+}
+
+.terms-content h4:first-child {
+  margin-top: 0;
+}
+
+.terms-content ul {
+  margin-bottom: 1.5rem;
+}
+
+.terms-content li {
+  margin-bottom: 0.5rem;
+}
+
+.terms-content .alert {
+  border-left: 4px solid #3498db;
+}
+</style>

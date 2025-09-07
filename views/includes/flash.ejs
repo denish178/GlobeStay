@@ -1,0 +1,47 @@
+<% if (success && success.length > 0) { %>
+<div
+  class="alert alert-success alert-dismissible fade show col-6 offset-3"
+  role="alert"
+  id="success-alert"
+>
+  <%= success %>
+  <button
+    type="button"
+    class="btn-close"
+    data-bs-dismiss="alert"
+    aria-label="Close"
+  ></button>
+</div>
+<script>
+  setTimeout(() => {
+    const alertBox = document.getElementById("success-alert");
+    if (alertBox) {
+      alertBox.classList.remove("show");
+      alertBox.classList.add("hide");
+    }
+  }, 1500);
+</script>
+<% } %> <% if (error && error.length > 0) { %>
+<div
+  class="alert alert-danger alert-dismissible fade show col-6 offset-3"
+  role="alert"
+  id="error-alert"
+>
+  <%= error %>
+  <button
+    type="button"
+    class="btn-close"
+    data-bs-dismiss="alert"
+    aria-label="Close"
+  ></button>
+</div>
+<script>
+  setTimeout(() => {
+    const alertBox = document.getElementById("error-alert");
+    if (alertBox) {
+      alertBox.classList.remove("show");
+      alertBox.classList.add("hide");
+    }
+  }, 1500);
+</script>
+<% } %>

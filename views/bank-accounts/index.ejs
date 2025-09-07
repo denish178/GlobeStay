@@ -1,0 +1,156 @@
+<% layout('layouts/boilerplate.ejs') %>
+
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <h3>My Bank Accounts</h3>
+    </div>
+    <% if(bankAccounts.length > 0) { %>
+    <div class="col-md-4 text-end">
+      <a href="/bank-accounts/new" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Add Bank Account
+      </a>
+    </div>
+    <% } %>
+  </div>
+
+  <% if(bankAccounts.length === 0) { %>
+  <div class="text-center py-5">
+    <i class="fas fa-university fa-3x text-muted mb-3"></i>
+    <h5 class="text-muted">No bank accounts found</h5>
+    <p class="text-muted">
+      Add a bank account to receive payments for your property bookings.
+    </p>
+    <a href="/bank-accounts/new" class="btn btn-primary">
+      <i class="fas fa-plus"></i> Add Your First Bank Account
+    </a>
+  </div>
+  <% } else { %>
+  <div class="row">
+    <% for(let account of bankAccounts) { %>
+    <div class="col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-header">
+          <div class="d-flex justify-content-between align-items-center">
+            <h6 class="mb-0">
+              <i class="fas fa-university"></i> <%= account.bankName %>
+            </h6>
+            <span
+              class="badge bg-<%= account.isActive ? 'success' : 'secondary' %>"
+            >
+              <%= account.isActive ? 'Active' : 'Inactive' %>
+            </span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-6">
+              <small class="text-muted">Account Holder</small><br />
+              <strong><%= account.accountHolderName %></strong>
+            </div>
+            <div class="col-6">
+              <small class="text-muted">Account Type</small><br />
+              <strong
+                ><%= account.accountType.charAt(0).toUpperCase() +
+                account.accountType.slice(1) %></strong
+              >
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-6">
+              <small class="text-muted">Account Number</small><br />
+              <strong>****<%= account.accountNumber.slice(-4) %></strong>
+            </div>
+            <div class="col-6">
+              <small class="text-muted">IFSC Code</small><br />
+              <strong><%= account.ifscCode %></strong>
+            </div>
+          </div>
+
+          <% if(account.branchName) { %>
+          <div class="mb-3">
+            <small class="text-muted">Branch</small><br />
+            <strong><%= account.branchName %></strong>
+          </div>
+          <% } %>
+
+          <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted">
+              Added: <%= new Date(account.createdAt).toLocaleDateString() %>
+            </small>
+
+            <div class="d-flex gap-2">
+              <a
+                href="/bank-accounts/<%= account._id %>"
+                class="btn btn-outline-primary btn-sm"
+              >
+                <i class="fas fa-eye"></i> View
+              </a>
+              <a
+                href="/bank-accounts/<%= account._id %>/edit"
+                class="btn btn-outline-warning btn-sm"
+              >
+                <i class="fas fa-edit"></i> Edit
+              </a>
+              <% if(!account.isActive) { %>
+              <button
+                type="button"
+                class="btn btn-outline-success btn-sm"
+                onclick="activateBankAccount('<%= account._id %>')"
+              >
+                <i class="fas fa-check"></i> Activate
+              </button>
+              <% } %>
+              <button
+                type="button"
+                class="btn btn-outline-danger btn-sm"
+                onclick="deleteBankAccount('<%= account._id %>')"
+              >
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% } %>
+  </div>
+  <% } %>
+</div>
+
+<script>
+  function deleteBankAccount(accountId) {
+    if (confirm("Are you sure you want to delete this bank account?")) {
+      fetch(`/bank-accounts/${accountId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }).then((response) => {
+        if (response.ok) {
+          window.location.reload();
+        } else {
+          alert("Error deleting bank account");
+        }
+      });
+    }
+  }
+
+  function activateBankAccount(accountId) {
+    if (confirm("Are you sure you want to activate this bank account? This will deactivate your current active account.")) {
+      fetch(`/bank-accounts/${accountId}/activate`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }).then((response) => {
+        if (response.ok) {
+          window.location.reload();
+        } else {
+          alert("Error activating bank account");
+        }
+      });
+    }
+  }
+</script>

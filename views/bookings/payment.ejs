@@ -1,0 +1,737 @@
+<% layout('layouts/boilerplate.ejs') %>
+
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="mb-0">
+            <i class="fas fa-credit-card"></i> Complete Payment
+          </h4>
+        </div>
+        <div class="card-body">
+          <!-- Booking Summary -->
+          <div class="row mb-4">
+            <div class="col-md-4">
+              <img
+                src="<%= booking.listing.image %>"
+                class="img-fluid rounded"
+                alt="<%= booking.listing.title %>"
+              />
+            </div>
+            <div class="col-md-8">
+              <h5><%= booking.listing.title %></h5>
+              <p class="text-muted">
+                <i class="fas fa-map-marker-alt"></i> <%=
+                booking.listing.location %>, <%= booking.listing.country %>
+              </p>
+              <div class="row">
+                <div class="col-6">
+                  <small class="text-muted">Check-in</small><br />
+                  <strong
+                    ><%= new Date(booking.checkIn).toLocaleDateString()
+                    %></strong
+                  >
+                </div>
+                <div class="col-6">
+                  <small class="text-muted">Check-out</small><br />
+                  <strong
+                    ><%= new Date(booking.checkOut).toLocaleDateString()
+                    %></strong
+                  >
+                </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col-6">
+                  <small class="text-muted">Guests</small><br />
+                  <strong><%= booking.guests %></strong>
+                </div>
+                <div class="col-6">
+                  <small class="text-muted">Total Amount</small><br />
+                  <strong class="text-primary fs-5"
+                    >₹<%= booking.totalPrice.toLocaleString("en-IN") %></strong
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment Methods -->
+          <div class="mb-4">
+            <h6>Choose Payment Method</h6>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <div
+                  class="form-check payment-method-card"
+                  onclick="selectPaymentMethod('card')"
+                >
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="paymentMethod"
+                    id="card"
+                    value="card"
+                  />
+                  <label class="form-check-label" for="card">
+                    <i class="fas fa-credit-card text-primary"></i> Credit/Debit
+                    Card
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <div
+                  class="form-check payment-method-card"
+                  onclick="selectPaymentMethod('upi')"
+                >
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="paymentMethod"
+                    id="upi"
+                    value="upi"
+                  />
+                  <label class="form-check-label" for="upi">
+                    <i class="fas fa-mobile-alt text-success"></i> UPI
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <div
+                  class="form-check payment-method-card"
+                  onclick="selectPaymentMethod('netbanking')"
+                >
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="paymentMethod"
+                    id="netbanking"
+                    value="netbanking"
+                  />
+                  <label class="form-check-label" for="netbanking">
+                    <i class="fas fa-university text-info"></i> Net Banking
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <div
+                  class="form-check payment-method-card"
+                  onclick="selectPaymentMethod('wallet')"
+                >
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="paymentMethod"
+                    id="wallet"
+                    value="wallet"
+                  />
+                  <label class="form-check-label" for="wallet">
+                    <i class="fas fa-wallet text-warning"></i> Digital Wallet
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment Forms -->
+          <div id="paymentForms">
+            <!-- Card Payment Form -->
+            <div id="cardForm" class="payment-form" style="display: none">
+              <h6>Card Details</h6>
+              <form id="cardPaymentForm">
+                <div class="row">
+                  <div class="col-12 mb-3">
+                    <label for="cardNumber" class="form-label"
+                      >Card Number</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="cardNumber"
+                      placeholder="1234 5678 9012 3456"
+                      maxlength="19"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                    <label for="expiryMonth" class="form-label">Month</label>
+                    <select class="form-control" id="expiryMonth">
+                      <% for(let i = 1; i <= 12; i++) { %>
+                      <option value="<%= i.toString().padStart(2, '0') %>">
+                        <%= i.toString().padStart(2, '0') %>
+                      </option>
+                      <% } %>
+                    </select>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label for="expiryYear" class="form-label">Year</label>
+                    <select class="form-control" id="expiryYear">
+                      <% for(let i = new Date().getFullYear(); i <= new
+                      Date().getFullYear() + 10; i++) { %>
+                      <option value="<%= i %>"><%= i %></option>
+                      <% } %>
+                    </select>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label for="cvv" class="form-label">CVV</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="cvv"
+                      placeholder="123"
+                      maxlength="4"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12 mb-3">
+                    <label for="cardName" class="form-label"
+                      >Cardholder Name</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="cardName"
+                      placeholder="John Doe"
+                    />
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-lock"></i> Pay ₹<%=
+                  booking.totalPrice.toLocaleString("en-IN") %>
+                </button>
+              </form>
+            </div>
+
+            <!-- UPI Payment Form -->
+            <div id="upiForm" class="payment-form" style="display: none">
+              <h6>UPI Payment</h6>
+              <form id="upiPaymentForm">
+                <div class="mb-3">
+                  <label for="upiId" class="form-label">UPI ID</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="upiId"
+                    placeholder="username@upi"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="upiApp" class="form-label">UPI App</label>
+                  <select class="form-control" id="upiApp">
+                    <option value="gpay">Google Pay</option>
+                    <option value="phonepe">PhonePe</option>
+                    <option value="paytm">Paytm</option>
+                    <option value="amazonpay">Amazon Pay</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-success">
+                  <i class="fas fa-mobile-alt"></i> Pay ₹<%=
+                  booking.totalPrice.toLocaleString("en-IN") %>
+                </button>
+              </form>
+            </div>
+
+            <!-- Net Banking Form -->
+            <div id="netbankingForm" class="payment-form" style="display: none">
+              <h6>Net Banking</h6>
+              <form id="netbankingPaymentForm">
+                <div class="mb-3">
+                  <label for="bankName" class="form-label">Select Bank</label>
+                  <select class="form-control" id="bankName">
+                    <option value="">Choose your bank</option>
+                    <option value="sbi">State Bank of India</option>
+                    <option value="hdfc">HDFC Bank</option>
+                    <option value="icici">ICICI Bank</option>
+                    <option value="axis">Axis Bank</option>
+                    <option value="kotak">Kotak Mahindra Bank</option>
+                    <option value="pnb">Punjab National Bank</option>
+                    <option value="canara">Canara Bank</option>
+                    <option value="union">Union Bank of India</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-info">
+                  <i class="fas fa-university"></i> Pay ₹<%=
+                  booking.totalPrice.toLocaleString("en-IN") %>
+                </button>
+              </form>
+            </div>
+
+            <!-- Digital Wallet Form -->
+            <div id="walletForm" class="payment-form" style="display: none">
+              <h6>Digital Wallet</h6>
+              <form id="walletPaymentForm">
+                <div class="mb-3">
+                  <label for="walletType" class="form-label"
+                    >Select Wallet</label
+                  >
+                  <select class="form-control" id="walletType">
+                    <option value="">Choose your wallet</option>
+                    <option value="paytm">Paytm</option>
+                    <option value="phonepe">PhonePe</option>
+                    <option value="amazonpay">Amazon Pay</option>
+                    <option value="mobikwik">MobiKwik</option>
+                    <option value="freecharge">FreeCharge</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="walletNumber" class="form-label"
+                    >Mobile Number</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="walletNumber"
+                    placeholder="Enter mobile number"
+                  />
+                </div>
+                <button type="submit" class="btn btn-warning">
+                  <i class="fas fa-wallet"></i> Pay ₹<%=
+                  booking.totalPrice.toLocaleString("en-IN") %>
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Payment Status -->
+          <div id="paymentStatus" class="mt-4" style="display: none">
+            <div class="alert alert-info">
+              <i class="fas fa-spinner fa-spin"></i> Processing payment...
+            </div>
+          </div>
+
+          <!-- Hidden booking data for JavaScript -->
+          <input
+            type="hidden"
+            id="bookingId"
+            data-booking-id="<%= booking._id %>"
+            data-amount="<%= booking.totalPrice %>"
+          />
+
+          <!-- Back Button -->
+          <div class="mt-4">
+            <a
+              href="/bookings/<%= booking._id %>"
+              class="btn btn-outline-secondary"
+            >
+              <i class="fas fa-arrow-left"></i> Back to Booking
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+  // Initialize Stripe
+  const stripe = Stripe("pk_test_your_publishable_key_here");
+  const bookingId = document
+    .getElementById("bookingId")
+    .getAttribute("data-booking-id");
+  const amount = parseInt(
+    document.getElementById("bookingId").getAttribute("data-amount")
+  );
+
+  let selectedPaymentMethod = "";
+
+  function selectPaymentMethod(method) {
+    selectedPaymentMethod = method;
+
+    // Hide all forms
+    document.querySelectorAll(".payment-form").forEach((form) => {
+      form.style.display = "none";
+    });
+
+    // Show selected form
+    document.getElementById(method + "Form").style.display = "block";
+
+    // Update radio button
+    document.getElementById(method).checked = true;
+  }
+
+  // Card Payment
+  document
+    .getElementById("cardPaymentForm")
+    .addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const cardNumber = document.getElementById("cardNumber").value;
+      const expiryMonth = document.getElementById("expiryMonth").value;
+      const expiryYear = document.getElementById("expiryYear").value;
+      const cvv = document.getElementById("cvv").value;
+      const cardName = document.getElementById("cardName").value;
+
+      if (!cardNumber || !cvv || !cardName) {
+        alert("Please fill all card details");
+        return;
+      }
+
+      showPaymentStatus();
+
+      try {
+        // Create payment intent
+        const response = await fetch("/payments/create-intent", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            bookingId: bookingId,
+            paymentMethod: "card",
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.clientSecret) {
+          // Confirm payment with Stripe
+          const result = await stripe.confirmCardPayment(data.clientSecret, {
+            payment_method: {
+              card: {
+                number: cardNumber,
+                exp_month: parseInt(expiryMonth),
+                exp_year: parseInt(expiryYear),
+                cvc: cvv,
+              },
+              billing_details: {
+                name: cardName,
+              },
+            },
+          });
+
+          if (result.error) {
+            hidePaymentStatus();
+            alert("Payment failed: " + result.error.message);
+          } else {
+            // Process successful payment
+            await processPayment("card", {
+              last4: cardNumber.slice(-4),
+              brand: getCardBrand(cardNumber),
+            });
+          }
+        }
+      } catch (error) {
+        hidePaymentStatus();
+        alert("Payment failed: " + error.message);
+      }
+    });
+
+  // UPI Payment
+  document
+    .getElementById("upiPaymentForm")
+    .addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const upiId = document.getElementById("upiId").value;
+      const upiApp = document.getElementById("upiApp").value;
+
+      if (!upiId) {
+        alert("Please enter UPI ID");
+        return;
+      }
+
+      showPaymentStatus();
+
+      try {
+        // First create payment intent to get payment ID
+        const intentResponse = await fetch("/payments/create-intent", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            bookingId: bookingId,
+            paymentMethod: "upi",
+          }),
+        });
+
+        const intentData = await intentResponse.json();
+
+        if (!intentResponse.ok) {
+          throw new Error(intentData.error || "Failed to create payment record");
+        }
+
+        if (!intentData.paymentId) {
+          throw new Error("Failed to create payment record");
+        }
+
+        // Then process UPI payment
+        const response = await fetch("/payments/upi", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            paymentId: intentData.paymentId,
+            upiId: upiId,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          showSuccessMessage(data.transactionId);
+        } else {
+          hidePaymentStatus();
+          alert("UPI payment failed: " + (data.error || "Unknown error"));
+        }
+      } catch (error) {
+        hidePaymentStatus();
+        console.error("UPI payment error:", error);
+        alert("UPI payment failed: " + error.message);
+      }
+    });
+
+  // Net Banking Payment
+  document
+    .getElementById("netbankingPaymentForm")
+    .addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const bankName = document.getElementById("bankName").value;
+
+      if (!bankName) {
+        alert("Please select a bank");
+        return;
+      }
+
+      showPaymentStatus();
+
+      try {
+        // First create payment intent to get payment ID
+        const intentResponse = await fetch("/payments/create-intent", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            bookingId: bookingId,
+            paymentMethod: "netbanking",
+          }),
+        });
+
+        const intentData = await intentResponse.json();
+
+        if (!intentData.paymentId) {
+          throw new Error("Failed to create payment record");
+        }
+
+        // Then process net banking payment
+        const response = await fetch("/payments/process", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            paymentId: intentData.paymentId,
+            paymentMethod: "netbanking",
+            paymentDetails: {
+              bankName: bankName,
+            },
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          showSuccessMessage(data.transactionId);
+        } else {
+          hidePaymentStatus();
+          alert("Net banking payment failed");
+        }
+      } catch (error) {
+        hidePaymentStatus();
+        alert("Net banking payment failed: " + error.message);
+      }
+    });
+
+  // Wallet Payment
+  document
+    .getElementById("walletPaymentForm")
+    .addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const walletType = document.getElementById("walletType").value;
+      const walletNumber = document.getElementById("walletNumber").value;
+
+      if (!walletType || !walletNumber) {
+        alert("Please fill all wallet details");
+        return;
+      }
+
+      showPaymentStatus();
+
+      try {
+        // First create payment intent to get payment ID
+        const intentResponse = await fetch("/payments/create-intent", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            bookingId: bookingId,
+            paymentMethod: "wallet",
+          }),
+        });
+
+        const intentData = await intentResponse.json();
+
+        if (!intentData.paymentId) {
+          throw new Error("Failed to create payment record");
+        }
+
+        // Then process wallet payment
+        const response = await fetch("/payments/process", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            paymentId: intentData.paymentId,
+            paymentMethod: "wallet",
+            paymentDetails: {
+              walletType: walletType,
+              walletNumber: walletNumber,
+            },
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          showSuccessMessage(data.transactionId);
+        } else {
+          hidePaymentStatus();
+          alert("Wallet payment failed");
+        }
+      } catch (error) {
+        hidePaymentStatus();
+        alert("Wallet payment failed: " + error.message);
+      }
+    });
+
+  // Helper functions
+  async function createPaymentRecord(paymentMethod) {
+    const response = await fetch("/payments/create-intent", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        bookingId: bookingId,
+        paymentMethod: paymentMethod,
+      }),
+    });
+
+    const data = await response.json();
+    return data.paymentId;
+  }
+
+  async function processPayment(paymentMethod, paymentDetails) {
+    const response = await fetch("/payments/process", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        paymentId: await createPaymentRecord(paymentMethod),
+        paymentMethod: paymentMethod,
+        paymentDetails: paymentDetails,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      showSuccessMessage(data.transactionId);
+    } else {
+      hidePaymentStatus();
+      alert("Payment failed");
+    }
+  }
+
+  function getCardBrand(cardNumber) {
+    const patterns = {
+      visa: /^4/,
+      mastercard: /^5[1-5]/,
+      amex: /^3[47]/,
+      discover: /^6(?:011|5)/,
+    };
+
+    for (const [brand, pattern] of Object.entries(patterns)) {
+      if (pattern.test(cardNumber)) {
+        return brand;
+      }
+    }
+    return "unknown";
+  }
+
+  function showPaymentStatus() {
+    document.getElementById("paymentStatus").style.display = "block";
+    document.querySelectorAll('button[type="submit"]').forEach((btn) => {
+      btn.disabled = true;
+    });
+  }
+
+  function hidePaymentStatus() {
+    document.getElementById("paymentStatus").style.display = "none";
+    document.querySelectorAll('button[type="submit"]').forEach((btn) => {
+      btn.disabled = false;
+    });
+  }
+
+  function showSuccessMessage(transactionId) {
+    document.getElementById("paymentStatus").innerHTML = `
+      <div class="alert alert-success">
+        <i class="fas fa-check-circle"></i> Payment completed successfully!
+        <br><small>Transaction ID: ${transactionId}</small>
+      </div>
+    `;
+
+    setTimeout(() => {
+      window.location.href = "/bookings";
+    }, 2000);
+  }
+
+  // Format card number
+  document.getElementById("cardNumber").addEventListener("input", function (e) {
+    let value = e.target.value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
+    let formattedValue = value.match(/.{1,4}/g)?.join(" ") || value;
+    e.target.value = formattedValue;
+  });
+
+  // Format CVV
+  document.getElementById("cvv").addEventListener("input", function (e) {
+    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+  });
+</script>
+
+<style>
+  .payment-method-card {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .payment-method-card:hover {
+    border-color: #007bff;
+    background-color: #f8f9fa;
+  }
+
+  .payment-method-card input[type="radio"]:checked + label {
+    color: #007bff;
+    font-weight: 600;
+  }
+
+  .payment-form {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 1.5rem;
+    background-color: #f8f9fa;
+  }
+</style>
