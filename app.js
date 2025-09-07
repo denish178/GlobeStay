@@ -373,7 +373,7 @@ const mockListings = [
 
 // Routes
 app.get("/", (req, res) => {
-  res.send("🌍 GlobeStay App Running! <br><br> <a href='/listings'>View All Listings</a>");
+  res.redirect("/listings");
 });
 
 // Privacy and Terms pages
